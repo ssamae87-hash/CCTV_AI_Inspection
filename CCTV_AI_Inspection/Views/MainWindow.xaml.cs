@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using CCTV_AI_Inspection.ViewModels;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -9,7 +10,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace CCTV_AI_Inspection
+
+namespace CCTV_AI_Inspection.Views
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -19,6 +21,7 @@ namespace CCTV_AI_Inspection
         public MainWindow()
         {
             InitializeComponent();
+            DataContext = new MainViewModel();
         }
     }
 }

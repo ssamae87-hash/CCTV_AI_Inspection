@@ -1,0 +1,71 @@
+﻿<Window x:Class="CCTV_AI_Inspection.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CCTV_AI_Inspection.Views"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="720" Width="1100"
+        WindowStartupLocation="CenterScreen">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="280"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- 좌측 패널: 파일 열기, 모델 로드, 파라미터 -->
+        <StackPanel Grid.Column="0" Margin="12">
+            <TextBlock Text="Controls" FontWeight="Bold" FontSize="16" Margin="0,0,0,4"/>
+            <Button Content="이미지 열기" Command="{Binding OpenImageCommand}" Height="36"/>
+            <TextBox Text="{Binding ImagePath}" IsReadOnly="True" Margin="0,4,0,12"/>
+
+            <Button Content="모델 열기 (.onnx)" Command="{Binding OpenModelCommand}" Height="36"/>
+            <TextBox Text="{Binding ModelPath}" IsReadOnly="True" Margin="0,4,0,12"/>
+
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                <TextBlock Text="Conf" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                <Slider Minimum="0.1" Maximum="0.9" Value="{Binding ConfThreshold}" Width="140"/>
+                <TextBlock Text="{Binding ConfThreshold, StringFormat=F2}" Margin="8,0,0,0" VerticalAlignment="Center"/>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,6,0,0">
+                <TextBlock Text="NMS" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                <Slider Minimum="0.1" Maximum="0.7" Value="{Binding NmsThreshold}" Width="140"/>
+                <TextBlock Text="{Binding NmsThreshold, StringFormat=F2}" Margin="8,0,0,0" VerticalAlignment="Center"/>
+            </StackPanel>
+
+            <Button Content="추론 실행" Command="{Binding InferenceCommand}" Height="40" Margin="0,12,0,0"/>
+            <TextBlock Text="{Binding Status}" TextWrapping="Wrap" Margin="0,8,0,0"/>
+        </StackPanel>
+
+        <Grid Grid.Column="1" Background="#111">
+            <Grid>
+                <Image Source="{Binding DisplayImage}" Stretch="Uniform" x:Name="Img"/>
+                <!-- Canvas에 바운딩 박스 오버레이 -->
+                <ItemsControl ItemsSource="{Binding Results}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <Canvas/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemContainerStyle>
+                        <Style TargetType="ContentPresenter">
+                            <Setter Property="Canvas.Left" Value="{Binding X}"/>
+                            <Setter Property="Canvas.Top" Value="{Binding Y}"/>
+                        </Style>
+                    </ItemsControl.ItemContainerStyle>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border BorderBrush="Lime" BorderThickness="2" Background="#40FFFF00"
+                                    Width="{Binding Width}" Height="{Binding Height}">
+                                <TextBlock Text="{Binding Label}"
+                                           Foreground="Black" Background="#A0FFFF00"
+                                           FontWeight="Bold" Padding="2" />
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>
